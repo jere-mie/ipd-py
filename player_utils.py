@@ -17,5 +17,13 @@ known_strategies = {
     "STFT_3":"0101010101010101010101010101010101010101010101010101010101010101010101010101010101010"
 }
 
-def next_move(encoding:str, memory:str):
-    pass
+def next_move(encoding: str, memory: str) -> str:
+    return encoding[int(memory, 2)]
+
+if __name__ == '__main__':
+    print(next_move(known_strategies['ALLD_1'], '00'))
+    print(next_move(known_strategies['ALLD_1'], '01'))
+    print(next_move(known_strategies['ALLC_1'], '00'))
+    print(next_move(known_strategies['ALLC_1'], '01'))
+    print(next_move(known_strategies['TFT_1'], '00'))
+    print(next_move(known_strategies['TFT_1'], '01'))
