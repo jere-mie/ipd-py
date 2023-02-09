@@ -19,6 +19,17 @@ Cases:
 - TF2T: `.....` (not possible with memory depth 1)
 - STFT: `01010` (STFT always defects on first move)
 
+### Table
+
+Note: PA and PB stand for "Player A" and "Player B", respectively. This table simply demonstrates how we obtain the encoding string `01011` for TFT. Note also that the last `1` in the encoding string `01011` refers to the fact that in TFT you always start by cooperating.
+
+| Case #  | PA | PB | ~ | PA Move (TFT) |
+| ------- | -- | -- | - | ------------- |
+| 0       | 0  | 0  | ~ | 0             |
+| 1       | 0  | 1  | ~ | 1             |
+| 2       | 1  | 0  | ~ | 0             |
+| 3       | 1  | 1  | ~ | 1             |
+
 ## Memory Depth 2
 
 Encodings are of length 21 (the first 16 are for the 16 different cases, the next 4 are for the second move, the last 1 is for the initial move).  
