@@ -20,6 +20,19 @@ known_strategies = {
 def next_move(encoding: str, memory: str) -> str:
     return encoding[int(memory, 2)]
 
+def encoding_length(memoryDepth=1) -> int:
+    encodingLength = 0
+    for i in range(memoryDepth+1):
+        encodingLength += 4**i
+    return encodingLength
+
+def generate_strategies(numOfStrats, memoryDepth=1) -> list:
+    strategies = []
+    for _ in range(numOfStrats):
+        strategies.append("".join([random.choice(['0', '1']) for __ in range(encoding_length(memoryDepth))]))
+        
+    return strategies
+
 if __name__ == '__main__':
     print(next_move(known_strategies['ALLD_1'], '00'))
     print(next_move(known_strategies['ALLD_1'], '01'))
