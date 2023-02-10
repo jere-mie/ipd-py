@@ -2,6 +2,7 @@ import random
 import math
 
 MEMORY_DEPTH = 3
+POPULATION_SIZE = 10
 CHROM_LENGTH = sum([4 ** i for i in range(MEMORY_DEPTH + 1)]) # Total chromosome length (based on the value of MEMORY_DEPTH).
 INIT_LENGTH = 4 ** MEMORY_DEPTH + MEMORY_DEPTH # Initial chromosome length for setting the population (based on the value of MEMORY_DEPTH).
 
@@ -52,4 +53,4 @@ def tournament(population, size):
                 memory_b = memory_b[2:] + move_b + move_a
     return points
 
-print(tournament(generate_population(10, INIT_LENGTH), 10))
+print(tournament(generate_population(POPULATION_SIZE, INIT_LENGTH), POPULATION_SIZE))
