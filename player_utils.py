@@ -51,6 +51,13 @@ def generate_strategies(numOfStrats, memoryDepth=1) -> list:
         strategies.append("".join([random.choice(['0', '1']) for __ in range(encoding_length(memoryDepth))]))
     return strategies
 
+def play_match(playera: str, playerb:str, rounds=1):
+    pa_mem = ''
+    pb_mem = ''
+    pa_score = 0
+    pb_score = 0
+    return 'hello'
+
 if __name__ == '__main__':
     print(next_move(known_strategies['TFT_2'], '0000'))
     print(next_move(known_strategies['TFT_2'], '00'))
