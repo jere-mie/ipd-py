@@ -3,6 +3,7 @@ import math
 
 MEMORY_DEPTH = 3
 POPULATION_SIZE = 10
+NUM_ROUNDS = 50
 CHROM_LENGTH = sum([4 ** i for i in range(MEMORY_DEPTH + 1)]) # Total chromosome length (based on the value of MEMORY_DEPTH).
 INIT_LENGTH = 4 ** MEMORY_DEPTH + MEMORY_DEPTH # Initial chromosome length for setting the population (based on the value of MEMORY_DEPTH).
 
@@ -43,7 +44,7 @@ def tournament(population, size):
                 memory_b += population[j][4 ** MEMORY_DEPTH + k] + population[i][4 ** MEMORY_DEPTH + k]
             
             # Unsure why this iterates 100 times like this. Thoughts?
-            for k in range(100):
+            for k in range(NUM_ROUNDS):
                 move_a = population[i][memory_key.index(memory_a)] # Get the specific move of a.
                 move_b = population[j][memory_key.index(memory_b)] # Get the specific move of b.
                 outcome = points_key[move_a + move_b] # Get the number of points.
