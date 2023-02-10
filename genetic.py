@@ -170,8 +170,9 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
 
     return runs
 
-runs = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE)
+runs = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
 
+# Output the results of the tournament, each generation getting its own separate line.
 for i in range(len(runs[0])):
     for p in runs[0][i]:
         print(p)
