@@ -30,17 +30,18 @@ def generate_population(population_size, chrom_len):
 
 def tournament(population, size):
     points = [0] * size
-    memory = []
     
     for i in range(size):
         for j in range(i, size):
             memory_a = ''
             memory_b = ''
             
+            # Parse each play. It must use a loop like this in order to be compatible with different memory depths.
             for k in range(MEMORY_DEPTH):
                 memory_a += population[i][4 ** MEMORY_DEPTH + k] + population[j][4 ** MEMORY_DEPTH + k]
                 memory_b += population[j][4 ** MEMORY_DEPTH + k] + population[i][4 ** MEMORY_DEPTH + k]
             
+            # Unsure why this iterates 100 times like this. Thoughts?
             for k in range(100):
                 move_a = population[i][memory_key.index(memory_a)] # Get the specific move of a.
                 move_b = population[j][memory_key.index(memory_b)] # Get the specific move of b.
