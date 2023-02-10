@@ -43,7 +43,7 @@ def next_move(encoding: str, memory: str) -> str:
 
 
 
-def encoding_length(memoryDepth=1) -> int:
+def encoding_length(memoryDepth: int=1) -> int:
     """Determines the encoding length of a given memory depth."""
 
     encodingLength = 0
@@ -53,7 +53,7 @@ def encoding_length(memoryDepth=1) -> int:
 
 
 
-def generate_strategies(numOfStrats, memoryDepth=1) -> list:
+def generate_strategies(numOfStrats: int, memoryDepth: int=1) -> list[str]:
     """Generates a given amount of unique strategies."""
 
     strategies = []
@@ -77,7 +77,7 @@ def generate_strategies(numOfStrats, memoryDepth=1) -> list:
 
 
 
-def play_round(pAInput, pBInput) -> list:
+def play_round(pAInput: str, pBInput: str) -> list[int]:
     """Determines what the outcome of the round is based on given inputs."""
 
     if pAInput == '0' and pBInput == '0':
@@ -91,7 +91,7 @@ def play_round(pAInput, pBInput) -> list:
 
 
 
-def play_match(playerA: str, playerB: str, rounds=1) -> list:
+def play_match(playerA: str, playerB: str, rounds: int=1) -> list[int]:
     """Plays a match between two strategies."""
 
     pAMem = ""
@@ -117,10 +117,12 @@ def play_match(playerA: str, playerB: str, rounds=1) -> list:
 
 
 
-def play_tournament(strategies, rounds=1):
+def play_tournament(strategies: list[str], rounds: int=1) -> list[int]:
     """Plays a tournament where all players play against
-    one another with a provided number of rounds."""
+    one another with a provided number of rounds. The strategy score
+    is the score with the coinciding index within the returning list."""
 
+    # Defines # of strategies and sets all strategy scores to 0
     numOfStrats = len(strategies)
     strategyScores = [0 for _ in range(numOfStrats)]
 
