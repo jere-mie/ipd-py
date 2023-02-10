@@ -2,8 +2,8 @@ import random
 import math
 
 MEMORY_DEPTH = 3
-POPULATION_SIZE = 10
-GENERATIONS = 100
+POPULATION_SIZE = 100
+GENERATIONS = 1000
 ROUNDS = 100
 CROSSOVER_RATE = 0.7
 MUTATION_RATE = 0.001
@@ -16,9 +16,18 @@ def binary(num, length):
     while len(val) < length: val = '0' + val # Add any number of '0's to fill up the length specified.
     return val
 
+# k-v pairs where the key is the encoding length and the value is the respective memory depth.
+memory_depths = {
+    1:0,
+    5:1,
+    21:2,
+    85:3,
+    341:4,
+    1365:5
+}
 
 memory_key = [binary(i, 2 * MEMORY_DEPTH) for i in range(2 ** (2 * MEMORY_DEPTH))] # List comprehension to get all possible cases.
-points_key = {'11':(3, 3), '10':(0, 5), '01':(5, 0), '00':(1, 1)} # For determining points.
+points_key = {'11':[3, 3], '10':[0, 5], '01':[5, 0], '00':[1, 1]} # For determining points.
 
 def generate_population(population_size, chrom_len):
 
@@ -33,11 +42,65 @@ def generate_population(population_size, chrom_len):
     
     return population
 
-def tournament(population, size):
+def next_move(encoding: str, memory: str) -> str:
+    # always return the last character when we have no memory
+    if len(memory) == 0:
+        return encoding[-1]
+
+    # if we have less memory than our memorydepth, but greater than no memory,
+    # we remove the main cases from the encoding to return a simpler encoding
+    if len(memory)//2 < memory_depths[len(encoding)]:
+        return next_move(encoding[-1*(len(encoding)//4):], memory)
+    return encoding[int(memory, 2)]
+
+def play_match(playerA: str, playerB: str, rounds: int=ROUNDS) -> list[int]:
+    """Plays a match between two strategies."""
+
+    pAMem = ""
+    pBMem = ""
+    pAScore = 0
+    pBScore = 0
+
+    # This variable figures out how much of the mem string to keep track of
+    totalRoundAmount = memory_depths[len(playerA)] * 2
+
+    for _ in range(rounds):
+        pANextMove = next_move(playerA, pAMem[-1*(totalRoundAmount):])
+        pBNextMove = next_move(playerB, pBMem[-1*(totalRoundAmount):])
+
+        pAMem += pANextMove + pBNextMove
+        pBMem += pBNextMove + pANextMove
+
+        roundScores = points_key[pANextMove + pBNextMove]
+        pAScore += roundScores[0]
+        pBScore += roundScores[1]
+
+    return [pAScore, pBScore]
+
+def play_tournament(strategies: list[str], rounds: int=ROUNDS) -> list[int]:
+    """Plays a tournament where all players play against
+    one another with a provided number of rounds. The strategy score
+    is the score with the coinciding index within the returning list."""
+
+    # Defines # of strategies and sets all strategy scores to 0.
+    numOfStrats = len(strategies)
+    strategyScores = [0 for _ in range(numOfStrats)]
+
+    for p1Num in range(numOfStrats):
+        for p2Num in range(p1Num+1, numOfStrats):
+            # This is where the match is played
+            matchScores = play_match(strategies[p1Num], strategies[p2Num], rounds)
+            strategyScores[p1Num] += matchScores[0]
+            strategyScores[p2Num] += matchScores[1]
+
+    return strategyScores
+
+def tournament(population):
+    size = len(population)
     points = [0] * size
     
     for i in range(size):
-        for j in range(i, size):
+        for j in range(i + 1, size):
             memory_a = ''
             memory_b = ''
             
@@ -61,14 +124,8 @@ def tournament(population, size):
 # The fitness formula squares each result to make the differences more extreme.
 # Then the average fitness is appended at the end of the list for comparison's sake.
 def get_fitness(points, size):
-
-    fitness = [0] * size
-    # average_fitness = 0
-
-    for x in range(size):
-        fitness[x] = (points[x] / (100.0 * size))**2
-        #average_fitness += fitness[x]
-
+    
+    fitness = points
     average_fitness = sum(fitness) / size
     fitness.append(average_fitness)
 
@@ -143,37 +200,34 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
     points = [0] * pop_size
     fitness = [0] * pop_size
     population = []
-    runs = []
     generations = []
-
-    for r in range(num_runs):
         
-        # This is the run for the first generation.
-        population = generate_population(pop_size, INIT_LENGTH + MEMORY_DEPTH) # Get the initial population.
-        points = tournament(population, pop_size) # Run the tournament.
-        fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
-        temp = zip(population, fitness) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
-        generations.append(list(temp)) # Append to generations.
-        generations[0].append(fitness[-1]) # Append the average fitness to the first generation.
-        
-        # Now we use a loop for the next generations (necessary for creating the new population).
-        for g in range(1, num_generations):
-            population = new_population(population, fitness, crossover_rate, mutation_rate) # Generate new population.
-            points = tournament(population, pop_size) # Run the tournament.
-            fitness = get_fitness(points, pop_size) # Get the fitness.
-            temp = zip(population, fitness) # New list of each person and their corresponding fitness level.
-            generations.append(list(temp))
-            generations[g].append(fitness[-1]) # Append the average fitness to the corresponding generation.
+    # This is the run for the first generation.
+    population = generate_population(pop_size, CHROM_LENGTH) # Get the initial population.
+    points = play_tournament(population) # Run the tournament.
+    fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
+    temp = zip(population, fitness) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
+    generations.append(list(temp)) # Append to generations.
+    #generations[0].append(fitness[-1]) # Append the average fitness to the first generation.
+    
+    # Now we use a loop for the next generations (necessary for creating the new population).
+    for g in range(1, num_generations):
+        population = new_population(population, fitness, crossover_rate, mutation_rate) # Generate new population.
+        points = play_tournament(population) # Run the tournament.
+        fitness = get_fitness(points, pop_size) # Get the fitness.
+        temp = zip(population, fitness) # New list of each person and their corresponding fitness level.
+        generations.append(list(temp))
+        #generations[g].append(fitness[-1]) # Append the average fitness to the corresponding generation.
 
-        runs.append(generations) # Appends the generations.
-        generations = []
+    #runs.append(generations) # Appends the generations.
+    #generations = []
 
-    return runs
+    return generations
 
-runs = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
+results = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
+lastgen = results[-1] # Get the last generation.
+lastgen.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
 
-# Output the results of the tournament, each generation getting its own separate line.
-for i in range(len(runs[0])):
-    for p in runs[0][i]:
-        print(p)
-    print()
+# Output the results of the tournament, namely the last generation.
+for i in range(len(lastgen)):
+    print(f"Player {i + 1}: {list(lastgen[i])[0]} Fitness: {list(lastgen[i])[1]}")
