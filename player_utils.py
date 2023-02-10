@@ -28,8 +28,9 @@ def encoding_length(memoryDepth=1) -> int:
 
 def generate_strategies(numOfStrats, memoryDepth=1) -> list:
     strategies = []
+    encLength = encoding_length(memoryDepth)
     for _ in range(numOfStrats):
-        strategies.append("".join([random.choice(['0', '1']) for __ in range(encoding_length(memoryDepth))]))
+        strategies.append("".join([random.choice(['0', '1']) for __ in range(encLength)]))
         
     return strategies
 
