@@ -2,8 +2,8 @@ import random
 import math
 from player_utils import *
 
-MEMORY_DEPTH = 1
-POPULATION_SIZE = 35
+MEMORY_DEPTH = 3
+POPULATION_SIZE = 86
 GENERATIONS = 1000
 ROUNDS = 100
 CROSSOVER_RATE = 0.7

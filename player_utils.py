@@ -132,9 +132,12 @@ def play_tournament(strategies: list[str], rounds: int=1) -> list[int]:
 
 
 if __name__ == '__main__':
-    strats = generate_strategies(numOfStrats=5, memoryDepth=1)
+    strats = [
+        '1001000010110100110101110110011110011110100011011011010100100100111001010100010001010',
+        '0111001110011101110010001000011000010000011101011001001111010011111101010001101101001'
+    ]
     print(strats)
-    print(play_tournament(strategies=strats, rounds=3))
+    print(play_tournament(strategies=strats, rounds=100))
 
     # print(next_move(known_strategies['TFT_2'], '0000'))
     # print(next_move(known_strategies['TFT_2'], '00'))
