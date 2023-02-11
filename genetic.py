@@ -1,8 +1,9 @@
 import random
 import math
+from player_utils import *
 
-MEMORY_DEPTH = 3
-POPULATION_SIZE = 100
+MEMORY_DEPTH = 1
+POPULATION_SIZE = 35
 GENERATIONS = 1000
 ROUNDS = 100
 CROSSOVER_RATE = 0.7
@@ -10,24 +11,16 @@ MUTATION_RATE = 0.001
 CHROM_LENGTH = sum([4 ** i for i in range(MEMORY_DEPTH + 1)]) # Total chromosome length (based on the value of MEMORY_DEPTH).
 INIT_LENGTH = 4 ** MEMORY_DEPTH + MEMORY_DEPTH # Initial chromosome length for setting the population (based on the value of MEMORY_DEPTH).
 
-# Used to get values for the memory_key list.
 def binary(num, length):
+    """Used to get values for the memory_key list."""
+    
     val = "{0:b}".format(num) # Format the given number num as binary.
     while len(val) < length: val = '0' + val # Add any number of '0's to fill up the length specified.
     return val
 
-# k-v pairs where the key is the encoding length and the value is the respective memory depth.
-memory_depths = {
-    1:0,
-    5:1,
-    21:2,
-    85:3,
-    341:4,
-    1365:5
-}
-
 memory_key = [binary(i, 2 * MEMORY_DEPTH) for i in range(2 ** (2 * MEMORY_DEPTH))] # List comprehension to get all possible cases.
-points_key = {'11':[3, 3], '10':[0, 5], '01':[5, 0], '00':[1, 1]} # For determining points.
+
+
 
 def generate_population(population_size, chrom_len):
 
@@ -42,58 +35,7 @@ def generate_population(population_size, chrom_len):
     
     return population
 
-def next_move(encoding: str, memory: str) -> str:
-    # always return the last character when we have no memory
-    if len(memory) == 0:
-        return encoding[-1]
 
-    # if we have less memory than our memorydepth, but greater than no memory,
-    # we remove the main cases from the encoding to return a simpler encoding
-    if len(memory)//2 < memory_depths[len(encoding)]:
-        return next_move(encoding[-1*(len(encoding)//4):], memory)
-    return encoding[int(memory, 2)]
-
-def play_match(playerA: str, playerB: str, rounds: int=ROUNDS) -> list[int]:
-    """Plays a match between two strategies."""
-
-    pAMem = ""
-    pBMem = ""
-    pAScore = 0
-    pBScore = 0
-
-    # This variable figures out how much of the mem string to keep track of
-    totalRoundAmount = memory_depths[len(playerA)] * 2
-
-    for _ in range(rounds):
-        pANextMove = next_move(playerA, pAMem[-1*(totalRoundAmount):])
-        pBNextMove = next_move(playerB, pBMem[-1*(totalRoundAmount):])
-
-        pAMem += pANextMove + pBNextMove
-        pBMem += pBNextMove + pANextMove
-
-        roundScores = points_key[pANextMove + pBNextMove]
-        pAScore += roundScores[0]
-        pBScore += roundScores[1]
-
-    return [pAScore, pBScore]
-
-def play_tournament(strategies: list[str], rounds: int=ROUNDS) -> list[int]:
-    """Plays a tournament where all players play against
-    one another with a provided number of rounds. The strategy score
-    is the score with the coinciding index within the returning list."""
-
-    # Defines # of strategies and sets all strategy scores to 0.
-    numOfStrats = len(strategies)
-    strategyScores = [0 for _ in range(numOfStrats)]
-
-    for p1Num in range(numOfStrats):
-        for p2Num in range(p1Num+1, numOfStrats):
-            # This is where the match is played
-            matchScores = play_match(strategies[p1Num], strategies[p2Num], rounds)
-            strategyScores[p1Num] += matchScores[0]
-            strategyScores[p2Num] += matchScores[1]
-
-    return strategyScores
 
 def tournament(population):
     size = len(population)
@@ -120,6 +62,8 @@ def tournament(population):
                 memory_b = memory_b[2:] + move_b + move_a
     return points
 
+
+
 # Get the fitness.
 # The fitness formula squares each result to make the differences more extreme.
 # Then the average fitness is appended at the end of the list for comparison's sake.
@@ -130,6 +74,8 @@ def get_fitness(points, size):
     fitness.append(average_fitness)
 
     return fitness
+
+
 
 # Generate a new population using the Roulette-Wheel sampling method.
 def new_population(population, fitness, crossover_rate, mutation_rate):
@@ -195,6 +141,8 @@ def new_population(population, fitness, crossover_rate, mutation_rate):
     if length % 2 != 0: new_pop.pop(random.randrange(len(new_pop)))
     return new_pop
 
+
+
 def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutation_rate):
     
     points = [0] * pop_size
@@ -204,7 +152,7 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
         
     # This is the run for the first generation.
     population = generate_population(pop_size, CHROM_LENGTH) # Get the initial population.
-    points = play_tournament(population) # Run the tournament.
+    points = play_tournament(population, ROUNDS) # Run the tournament.
     fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
     temp = zip(population, fitness) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
     generations.append(list(temp)) # Append to generations.
@@ -213,7 +161,7 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
     # Now we use a loop for the next generations (necessary for creating the new population).
     for g in range(1, num_generations):
         population = new_population(population, fitness, crossover_rate, mutation_rate) # Generate new population.
-        points = play_tournament(population) # Run the tournament.
+        points = play_tournament(population, ROUNDS) # Run the tournament.
         fitness = get_fitness(points, pop_size) # Get the fitness.
         temp = zip(population, fitness) # New list of each person and their corresponding fitness level.
         generations.append(list(temp))
@@ -224,10 +172,13 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
 
     return generations
 
-results = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
-lastgen = results[-1] # Get the last generation.
-lastgen.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
 
-# Output the results of the tournament, namely the last generation.
-for i in range(len(lastgen)):
-    print(f"Player {i + 1}: {list(lastgen[i])[0]} Fitness: {list(lastgen[i])[1]}")
+
+if __name__ == '__main__':
+    results = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
+    lastgen = results[-1] # Get the last generation.
+    lastgen.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
+
+    # Output the results of the tournament, namely the last generation.
+    for i in range(len(lastgen)):
+        print(f"Player {i + 1}: {list(lastgen[i])[0]} Fitness: {list(lastgen[i])[1]}")

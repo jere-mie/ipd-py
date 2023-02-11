@@ -28,6 +28,14 @@ memory_depths = {
     1365:5
 }
 
+# For determining points.
+points_key = {
+    '00': [1, 1],
+    '01': [5, 0], 
+    '10': [0, 5], 
+    '11': [3, 3]
+}
+
 
 
 def next_move(encoding: str, memory: str) -> str:
@@ -77,20 +85,6 @@ def generate_strategies(numOfStrats: int, memoryDepth: int=1) -> list[str]:
 
 
 
-def play_round(pAInput: str, pBInput: str) -> list[int]:
-    """Determines what the outcome of the round is based on given inputs."""
-
-    if pAInput == '0' and pBInput == '0':
-        return [1, 1]
-    elif pAInput == '0' and pBInput == '1':
-        return [5, 0]
-    elif pAInput == '1' and pBInput == '0':
-        return [0, 5]
-    else:
-        return [3, 3]
-
-
-
 def play_match(playerA: str, playerB: str, rounds: int=1) -> list[int]:
     """Plays a match between two strategies."""
 
@@ -109,7 +103,7 @@ def play_match(playerA: str, playerB: str, rounds: int=1) -> list[int]:
         pAMem += pANextMove + pBNextMove
         pBMem += pBNextMove + pANextMove
 
-        roundScores = play_round(pANextMove, pBNextMove)
+        roundScores = points_key[pANextMove + pBNextMove]
         pAScore += roundScores[0]
         pBScore += roundScores[1]
 
