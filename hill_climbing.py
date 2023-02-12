@@ -97,6 +97,7 @@ def prisoners_dilemma() -> list:
                 
         if len(newStrat) == 0:
             break
+        print(newStrat)
         
         currentStrat = newStrat
         
@@ -111,6 +112,7 @@ def generate_initial_strategy() -> str:
 
 def __main__():
     results = prisoners_dilemma()
+    print("HILL CLIMBING")
     print("Optimized String: " + results[0])
     print("Cumulative Score: " + str(results[1]))
 
