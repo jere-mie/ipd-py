@@ -55,10 +55,10 @@ def run_generation(strategy: str) -> list:
             stratScores.append(randomTournamentScores[-1])
             
     # Stores highest scores by fitness score, then index
-    highestScores = [[-1, 0]]
+    highestScores = [[-1, -1]]
     
     # Checks to see if a new local best strategy was discovered
-    for index in range(len(stratScores)):
+    for index in range(len(stratScores)-1):
         score = stratScores[index]
         
         if score < highestScores[0][0]:
