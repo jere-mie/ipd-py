@@ -1,6 +1,6 @@
 import random
 from player_utils import *
-random.seed(8)
+#random.seed(8)
 
 MEMORY_DEPTH = 3
 GENERATIONS = 100
@@ -109,7 +109,7 @@ def tabu_prisoners_dilemma() -> list:
             
 
 def generate_initial_strategy() -> str:
-    random.seed(8)
+    #random.seed(8)
     return "".join([random.choice(['0', '1']) for _ in range(STRAT_LENGTH)])
 
 
