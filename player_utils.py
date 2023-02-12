@@ -1,4 +1,5 @@
 import random
+#random.seed(6)
 # a dict of pre-made strategy encodings
 known_strategies = {
     "ALLD_1":"00000",
@@ -74,9 +75,11 @@ def generate_strategies(numOfStrats: int, memoryDepth: int=1) -> list[str]:
         
     # Generates strategies with guarantee of no duplication
     for _ in range(numOfStrats):
+        #random.seed(6)
         strat = "".join([random.choice(['0', '1']) for __ in range(encLength)])
 
         while strat in strategies:
+            #random.seed(6)
             strat = "".join([random.choice(['0', '1']) for __ in range(encLength)])
 
         strategies.append(strat)
