@@ -1,6 +1,6 @@
 import random
 from player_utils import *
-#random.seed(8)
+from hill_climbing import generate_initial_strategy
 
 MEMORY_DEPTH = 3
 GENERATIONS = 100
@@ -8,6 +8,7 @@ ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = True
+TABU_LENGTH = 10 # maximum tabu list length
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -99,19 +100,12 @@ def tabu_prisoners_dilemma() -> list:
             break
         tabu_list.append(newStrat)
         # max tabu list length - will need to be tuned based on generations/rounds
-        if len(tabu_list) > 10:
+        if len(tabu_list) > TABU_LENGTH:
             tabu_list = tabu_list[1:]
         # print(newStrat)
         #print(len(tabu_list))
         currentStrat = newStrat
     return [currentStrat, currentStratResult]
-        
-            
-
-def generate_initial_strategy() -> str:
-    #random.seed(8)
-    return "".join([random.choice(['0', '1']) for _ in range(STRAT_LENGTH)])
-
 
 def __main__():
     results = tabu_prisoners_dilemma()
