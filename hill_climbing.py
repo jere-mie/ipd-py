@@ -32,10 +32,10 @@ def generate_neighbours(currentStrat: str) -> list[str]:
 def run_generation(strategy: str) -> list:
     """Runs a single generation.
     
-    The return values are as follows by index:
-    0 - All of the strategy strings
-    1 - The score of the current strategy being used
-    2 - The highest scores from this generation"""
+    \nThe return values are as follows by index:
+    \n0 - All of the strategy strings
+    \n1 - The score of the current strategy being used
+    \n2 - The highest scores from this generation"""
     
     # Compiles all strategies into one list
     allStrats = generate_neighbours(strategy)
