@@ -27,13 +27,15 @@ def generate_neighbours(currentStrat: str) -> list[str]:
         
     return neighbours
 
+
+
 def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     """Runs a single generation.
     
-    The return values are as follows by index:
-    0 - All of the strategy strings
-    1 - The score of the current strategy being used
-    2 - The highest scores from this generation"""
+    \nThe return values are as follows by index:
+    \n0 - All of the strategy strings
+    \n1 - The score of the current strategy being used
+    \n2 - The highest scores from this generation"""
     
     # Compiles all strategies into one list
     allStrats = generate_neighbours(strategy)
@@ -53,10 +55,10 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
             stratScores.append(randomTournamentScores[-1])
             
     # Stores highest scores by fitness score, then index
-    highestScores = [[-1, 0]]
+    highestScores = [[-1, -1]]
     
     # Checks to see if a new local best strategy was discovered
-    for index in range(len(stratScores)):
+    for index in range(len(stratScores)-1):
         score = stratScores[index]
 
         if allStrats[index] in tabu_list:
@@ -70,9 +72,11 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
             
     return [allStrats, stratScores[-1], highestScores]
 
+
+
 def tabu_prisoners_dilemma() -> list:
-    """Runs a simulation of the prisoner's dilemma using a hill 
-    climbing algorithm to determine the best possible strategy.
+    """Runs a simulation of the prisoner's dilemma using a tabu
+    search algorithm to determine the best possible strategy.
     Returns the top strategy along with its result in the last
     generation."""
     
@@ -95,16 +99,16 @@ def tabu_prisoners_dilemma() -> list:
                 currentStratResult = stratResult[0]
                 break
                 
-                
         if len(newStrat) == 0:
             break
+
         tabu_list.append(newStrat)
         # max tabu list length - will need to be tuned based on generations/rounds
         if len(tabu_list) > TABU_LENGTH:
             tabu_list = tabu_list[1:]
-        # print(newStrat)
-        #print(len(tabu_list))
+
         currentStrat = newStrat
+
     return [currentStrat, currentStratResult]
 
 def __main__():
