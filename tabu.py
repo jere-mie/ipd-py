@@ -27,8 +27,6 @@ def generate_neighbours(currentStrat: str) -> list[str]:
         
     return neighbours
 
-
-
 def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     """Runs a single generation.
     
@@ -71,8 +69,6 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
             highestScores.append([score, index])
             
     return [allStrats, stratScores[-1], highestScores]
-
-
 
 def tabu_prisoners_dilemma() -> list:
     """Runs a simulation of the prisoner's dilemma using a tabu
