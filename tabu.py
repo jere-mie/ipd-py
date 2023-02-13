@@ -7,6 +7,7 @@ ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = True
+STEP_CAP = 10
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -104,7 +105,7 @@ def tabu_prisoners_dilemma() -> list:
 
         tabu_list.append(newStrat)
         # max tabu list length - will need to be tuned based on generations/rounds
-        if len(tabu_list) > 10:
+        if len(tabu_list) > STEP_CAP:
             tabu_list = tabu_list[1:]
 
         currentStrat = newStrat
