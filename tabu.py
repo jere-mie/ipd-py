@@ -1,5 +1,6 @@
 import random
 from player_utils import *
+from hill_climbing import generate_initial_strategy
 
 MEMORY_DEPTH = 3
 GENERATIONS = 100
@@ -7,11 +8,9 @@ ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = True
-STEP_CAP = 10
+TABU_LENGTH = 10 # maximum tabu list length
 
 BIT_FLIP = {'0': '1', '1': '0'}
-
-
 
 def generate_neighbours(currentStrat: str) -> list[str]:
     """Generates neighbours based on the given current strategy."""
@@ -27,8 +26,6 @@ def generate_neighbours(currentStrat: str) -> list[str]:
         neighbours.append("".join(newStrat))
         
     return neighbours
-
-
 
 def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     """Runs a single generation.
@@ -73,8 +70,6 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
             
     return [allStrats, stratScores[-1], highestScores]
 
-
-
 def tabu_prisoners_dilemma() -> list:
     """Runs a simulation of the prisoner's dilemma using a tabu
     search algorithm to determine the best possible strategy.
@@ -105,19 +100,12 @@ def tabu_prisoners_dilemma() -> list:
 
         tabu_list.append(newStrat)
         # max tabu list length - will need to be tuned based on generations/rounds
-        if len(tabu_list) > STEP_CAP:
+        if len(tabu_list) > TABU_LENGTH:
             tabu_list = tabu_list[1:]
 
         currentStrat = newStrat
 
     return [currentStrat, currentStratResult]
-        
-            
-
-def generate_initial_strategy() -> str:
-    return "".join([random.choice(['0', '1']) for _ in range(STRAT_LENGTH)])
-
-
 
 def __main__():
     results = tabu_prisoners_dilemma()
