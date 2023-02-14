@@ -80,12 +80,11 @@ def tabu_prisoners_dilemma() -> list:
     # Initialized with a randomized strategy and works with neighbours
     # in order to optimize results
     currentStrat = generate_initial_strategy()
-    print(currentStrat)
     currentStratResult = 0
     tabu_list = []
     
     # Simulates all the generations
-    for _ in range(GENERATIONS):
+    for gen in range(GENERATIONS):
         genResults = tabu_run_generation(currentStrat, tabu_list)
         currentStratResult = genResults[1]
         newStrat = ""
@@ -104,6 +103,7 @@ def tabu_prisoners_dilemma() -> list:
         if len(tabu_list) > TABU_LENGTH:
             tabu_list = tabu_list[1:]
 
+        print(f"Gen {gen+1}: " + newStrat + f" Score: {currentStratResult}")
         currentStrat = newStrat
 
     return [currentStrat, currentStratResult]

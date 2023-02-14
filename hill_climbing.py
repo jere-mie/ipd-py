@@ -98,7 +98,7 @@ def prisoners_dilemma() -> list:
                 
         if len(newStrat) == 0:
             break
-        print(f"Gen {gen+1}: " + newStrat)
+        print(f"Gen {gen+1}: " + newStrat + f" Score: {currentStratResult}")
         
         currentStrat = newStrat
         
