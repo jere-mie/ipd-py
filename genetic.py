@@ -154,9 +154,9 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
     population = generate_population(pop_size, CHROM_LENGTH) # Get the initial population.
     points = play_tournament(population, ROUNDS) # Run the tournament.
     fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
-    temp = zip(population, fitness) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
+    temp = list(zip(population, fitness)) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
     temp.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
-    print(f"Generation 0: Player {i + 1}: {list(temp[i])[0]} Fitness: {list(temp[i])[1]} Avg Fitness: {fitness[-1]}")
+    print(f"Generation 0: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} Avg Fitness: {fitness[-1]}")
     generations.append(list(temp)) # Append to generations.
     #generations[0].append(fitness[-1]) # Append the average fitness to the first generation.
     
@@ -165,9 +165,9 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
         population = new_population(population, fitness, crossover_rate, mutation_rate) # Generate new population.
         points = play_tournament(population, ROUNDS) # Run the tournament.
         fitness = get_fitness(points, pop_size) # Get the fitness.
-        temp = zip(population, fitness) # New list of each person and their corresponding fitness level.
+        temp = list(zip(population, fitness)) # New list of each person and their corresponding fitness level.
         temp.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
-        print(f"Generation 0{g}: Player {i + 1}: {list(temp[i])[0]} Fitness: {list(temp[i])[1]} Avg Fitness: {fitness[-1]}")
+        print(f"Generation {g}: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} Avg Fitness: {fitness[-1]}")
         generations.append(list(temp))
         #generations[g].append(fitness[-1]) # Append the average fitness to the corresponding generation.
 
