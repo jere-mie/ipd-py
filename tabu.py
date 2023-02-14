@@ -1,14 +1,15 @@
 import random
 from player_utils import *
 from hill_climbing import generate_initial_strategy
+import time
 
 MEMORY_DEPTH = 3
-GENERATIONS = 100
+GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
-PLAY_NEIGHBOURS = True
-TABU_LENGTH = 10 # maximum tabu list length
+PLAY_NEIGHBOURS = False
+TABU_LENGTH = 100 # maximum tabu list length
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -108,12 +109,14 @@ def tabu_prisoners_dilemma() -> list:
     return [currentStrat, currentStratResult]
 
 def __main__():
+    t0 = time.time()
     results = tabu_prisoners_dilemma()
+    t1 = time.time()
+    timeTook = t1 - t0
     print("TABU SEARCH")
     print("Optimized String: " + results[0])
     print("Cumulative Score: " + str(results[1]))
-
-
+    print(f"Time took: {timeTook} seconds ({timeTook/60} minutes)")
 
 if __name__ == '__main__':   
     __main__()
