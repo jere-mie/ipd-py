@@ -2,13 +2,13 @@ import random
 import time
 from player_utils import *
 
-MEMORY_DEPTH = 3
+MEMORY_DEPTH = 1
 GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = False
-SAME_STRANGERS = False
+SAME_STRANGERS = True
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -31,7 +31,7 @@ def generate_neighbours(currentStrat: str) -> list[str]:
     
 
 
-def run_generation(strategy: str) -> list:
+def run_generation(strategy: str, randomStrats: list[str]=None) -> list:
     """Runs a single generation.
     
     \nThe return values are as follows by index:
@@ -43,12 +43,10 @@ def run_generation(strategy: str) -> list:
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
     stratScores = []
-    randomStrats = []
 
     if SAME_STRANGERS and PLAY_NEIGHBOURS:
         raise Exception("Cannot play same strangers and also play neighbours")
-    else:
-        randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+    elif SAME_STRANGERS:
         randomStrats.append(strategy)
     
     if PLAY_NEIGHBOURS:
@@ -66,6 +64,8 @@ def run_generation(strategy: str) -> list:
             
             randomTournamentScores = play_tournament(randomStrats, ROUNDS)
             stratScores.append(randomTournamentScores[-1])
+            
+        randomStrats.pop()
             
     # Stores highest scores by fitness score, then index
     highestScores = [[-1, -1]]
@@ -95,10 +95,11 @@ def prisoners_dilemma() -> list:
     # in order to optimize results
     currentStrat = generate_initial_strategy(STRAT_LENGTH)
     currentStratResult = 0
+    randomStrats = None if not SAME_STRANGERS else generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
     
     # Simulates all the generations
     for gen in range(GENERATIONS):
-        genResults = run_generation(currentStrat)
+        genResults = run_generation(currentStrat) if randomStrats is None else run_generation(currentStrat, randomStrats)
         currentStratResult = genResults[1]
         newStrat = ""
         

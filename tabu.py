@@ -3,7 +3,7 @@ from player_utils import *
 from hill_climbing import generate_initial_strategy
 import time
 
-MEMORY_DEPTH = 2
+MEMORY_DEPTH = 1
 GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
@@ -29,7 +29,7 @@ def generate_neighbours(currentStrat: str) -> list[str]:
         
     return neighbours
 
-def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
+def tabu_run_generation(strategy: str, tabu_list: list[str], randomStrats: list[str]=None) -> list:
     """Runs a single generation.
     
     \nThe return values are as follows by index:
@@ -41,12 +41,10 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
     stratScores = []
-    randomStrats = []
 
     if SAME_STRANGERS and PLAY_NEIGHBOURS:
         raise Exception("Cannot play same strangers and also play neighbours")
-    else:
-        randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+    elif SAME_STRANGERS:
         randomStrats.append(strategy)
     
     if PLAY_NEIGHBOURS:
@@ -64,6 +62,8 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
             
             randomTournamentScores = play_tournament(randomStrats, ROUNDS)
             stratScores.append(randomTournamentScores[-1])
+            
+        randomStrats.pop()
             
     # Stores highest scores by fitness score, then index
     highestScores = [[-1, -1]]
@@ -94,10 +94,11 @@ def tabu_prisoners_dilemma() -> list:
     currentStrat = generate_initial_strategy(STRAT_LENGTH)
     currentStratResult = 0
     tabu_list = []
+    randomStrats = None if not SAME_STRANGERS else generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
     
     # Simulates all the generations
     for gen in range(GENERATIONS):
-        genResults = tabu_run_generation(currentStrat, tabu_list)
+        genResults = tabu_run_generation(currentStrat, tabu_list) if randomStrats is None else tabu_run_generation(currentStrat, tabu_list, randomStrats)
         currentStratResult = genResults[1]
         newStrat = ""
         
