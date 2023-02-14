@@ -61,7 +61,7 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
 
         if allStrats[index] in tabu_list:
             continue
-        if score < highestScores[0][0]:
+        elif score < highestScores[0][0]:
             continue
         elif score > highestScores[0][0]:
             highestScores = [[score, index]]
