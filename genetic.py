@@ -1,6 +1,7 @@
 import random
 import math
 from player_utils import *
+import time
 
 MEMORY_DEPTH = 3
 POPULATION_SIZE = 86
@@ -154,7 +155,9 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
     population = generate_population(pop_size, CHROM_LENGTH) # Get the initial population.
     points = play_tournament(population, ROUNDS) # Run the tournament.
     fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
-    temp = zip(population, fitness) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
+    temp = list(zip(population, fitness)) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
+    temp.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
+    print(f"Generation 0: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} Avg Fitness: {fitness[-1]}")
     generations.append(list(temp)) # Append to generations.
     #generations[0].append(fitness[-1]) # Append the average fitness to the first generation.
     
@@ -163,7 +166,9 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
         population = new_population(population, fitness, crossover_rate, mutation_rate) # Generate new population.
         points = play_tournament(population, ROUNDS) # Run the tournament.
         fitness = get_fitness(points, pop_size) # Get the fitness.
-        temp = zip(population, fitness) # New list of each person and their corresponding fitness level.
+        temp = list(zip(population, fitness)) # New list of each person and their corresponding fitness level.
+        temp.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
+        print(f"Generation {g+1}: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} AvgFitness: {fitness[-1]}")
         generations.append(list(temp))
         #generations[g].append(fitness[-1]) # Append the average fitness to the corresponding generation.
 
@@ -175,10 +180,14 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
 
 
 if __name__ == '__main__':
+    start = time.time()
     results = prisoners_dilemma(POPULATION_SIZE, GENERATIONS, 1, CROSSOVER_RATE, MUTATION_RATE) # Run the Prisoner's Dilemma!
-    lastgen = results[-1] # Get the last generation.
-    lastgen.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
+    timeTook = time.time()-start
+    print()
+    print(f"Time took: {timeTook} seconds ({timeTook/60} minutes)")
+    # lastgen = results[-1] # Get the last generation.
+    # lastgen.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
 
-    # Output the results of the tournament, namely the last generation.
-    for i in range(len(lastgen)):
-        print(f"Player {i + 1}: {list(lastgen[i])[0]} Fitness: {list(lastgen[i])[1]}")
+    # # Output the results of the tournament, namely the last generation.
+    # for i in range(len(lastgen)):
+    #     print(f"Player {i + 1}: {list(lastgen[i])[0]} Fitness: {list(lastgen[i])[1]}")
