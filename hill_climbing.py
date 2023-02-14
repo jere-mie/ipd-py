@@ -8,6 +8,7 @@ ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = False
+SAME_STRANGERS = False
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -42,6 +43,13 @@ def run_generation(strategy: str) -> list:
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
     stratScores = []
+    randomStrats = []
+
+    if SAME_STRANGERS and PLAY_NEIGHBOURS:
+        raise Exception("Cannot play same strangers and also play neighbours")
+    else:
+        randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+        randomStrats.append(strategy)
     
     if PLAY_NEIGHBOURS:
         # Grabs the strategy scores from the tournament played between neighbours
@@ -49,7 +57,11 @@ def run_generation(strategy: str) -> list:
     else:
         # Throws all neighbours and current strategy into randomized tournaments
         for strat in allStrats:
-            randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+            if not SAME_STRANGERS:
+                randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+            else:
+                randomStrats.pop()
+
             randomStrats.append(strat)
             
             randomTournamentScores = play_tournament(randomStrats, ROUNDS)
@@ -81,7 +93,7 @@ def prisoners_dilemma() -> list:
     
     # Initialized with a randomized strategy and works with neighbours
     # in order to optimize results
-    currentStrat = generate_initial_strategy()
+    currentStrat = generate_initial_strategy(STRAT_LENGTH)
     currentStratResult = 0
     
     # Simulates all the generations
@@ -106,8 +118,8 @@ def prisoners_dilemma() -> list:
         
             
 
-def generate_initial_strategy() -> str:
-    return "".join([random.choice(['0', '1']) for _ in range(STRAT_LENGTH)])
+def generate_initial_strategy(strat_length) -> str:
+    return "".join([random.choice(['0', '1']) for _ in range(strat_length)])
 
 
 

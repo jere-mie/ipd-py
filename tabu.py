@@ -3,12 +3,13 @@ from player_utils import *
 from hill_climbing import generate_initial_strategy
 import time
 
-MEMORY_DEPTH = 3
+MEMORY_DEPTH = 2
 GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = False
+SAME_STRANGERS = False
 TABU_LENGTH = 100 # maximum tabu list length
 
 BIT_FLIP = {'0': '1', '1': '0'}
@@ -40,6 +41,13 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
     stratScores = []
+    randomStrats = []
+
+    if SAME_STRANGERS and PLAY_NEIGHBOURS:
+        raise Exception("Cannot play same strangers and also play neighbours")
+    else:
+        randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+        randomStrats.append(strategy)
     
     if PLAY_NEIGHBOURS:
         # Grabs the strategy scores from the tournament played between neighbours
@@ -47,7 +55,11 @@ def tabu_run_generation(strategy: str, tabu_list: list[str]) -> list:
     else:
         # Throws all neighbours and current strategy into randomized tournaments
         for strat in allStrats:
-            randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+            if not SAME_STRANGERS:
+                randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
+            else:
+                randomStrats.pop()
+
             randomStrats.append(strat)
             
             randomTournamentScores = play_tournament(randomStrats, ROUNDS)
@@ -79,7 +91,7 @@ def tabu_prisoners_dilemma() -> list:
     
     # Initialized with a randomized strategy and works with neighbours
     # in order to optimize results
-    currentStrat = generate_initial_strategy()
+    currentStrat = generate_initial_strategy(STRAT_LENGTH)
     currentStratResult = 0
     tabu_list = []
     
