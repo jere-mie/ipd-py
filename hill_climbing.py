@@ -1,4 +1,5 @@
 import random
+import time
 from player_utils import *
 
 MEMORY_DEPTH = 3
@@ -6,7 +7,7 @@ GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
-PLAY_NEIGHBOURS = True
+PLAY_NEIGHBOURS = False
 
 BIT_FLIP = {'0': '1', '1': '0'}
 
@@ -84,7 +85,7 @@ def prisoners_dilemma() -> list:
     currentStratResult = 0
     
     # Simulates all the generations
-    for _ in range(GENERATIONS):
+    for gen in range(GENERATIONS):
         genResults = run_generation(currentStrat)
         currentStratResult = genResults[1]
         newStrat = ""
@@ -97,7 +98,7 @@ def prisoners_dilemma() -> list:
                 
         if len(newStrat) == 0:
             break
-        print(newStrat)
+        print(f"Gen {gen+1}: " + newStrat)
         
         currentStrat = newStrat
         
@@ -111,10 +112,14 @@ def generate_initial_strategy() -> str:
 
 
 def __main__():
+    t0 = time.time()
     results = prisoners_dilemma()
+    t1 = time.time()
+    timeTook = t1 - t0
     print("HILL CLIMBING")
     print("Optimized String: " + results[0])
     print("Cumulative Score: " + str(results[1]))
+    print(f"Time took: {timeTook} seconds ({timeTook/60} minutes)")
 
 
 
