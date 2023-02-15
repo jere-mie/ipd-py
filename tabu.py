@@ -3,13 +3,13 @@ from player_utils import *
 from hill_climbing import generate_initial_strategy
 import time
 
-MEMORY_DEPTH = 1
+MEMORY_DEPTH = 3
 GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
 OPPONENT_SIZE = 30
 PLAY_NEIGHBOURS = False
-SAME_STRANGERS = False
+SAME_STRANGERS = True
 TABU_LENGTH = 100 # maximum tabu list length
 
 BIT_FLIP = {'0': '1', '1': '0'}

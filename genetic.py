@@ -157,7 +157,7 @@ def prisoners_dilemma(pop_size, num_generations, num_runs, crossover_rate, mutat
     fitness = get_fitness(points, pop_size) # Get the fitness. This is used to determine who can carry on to the next generation.
     temp = list(zip(population, fitness)) # Creates a list that iterates through the population and fitness together, effectively giving each "person" their fitness.
     temp.sort(key=lambda x: x[1], reverse=True) # Sort it by fitness/score level in decreasing order.
-    print(f"Generation 0: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} Avg Fitness: {fitness[-1]}")
+    print(f"Generation 1: Player: {list(temp[0])[0]} Fitness: {list(temp[0])[1]} AvgFitness: {fitness[-1]}")
     generations.append(list(temp)) # Append to generations.
     #generations[0].append(fitness[-1]) # Append the average fitness to the first generation.
     

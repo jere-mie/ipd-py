@@ -2,7 +2,7 @@ import random
 import time
 from player_utils import *
 
-MEMORY_DEPTH = 1
+MEMORY_DEPTH = 3
 GENERATIONS = 1000
 ROUNDS = 100
 STRAT_LENGTH = encoding_length(MEMORY_DEPTH) 
