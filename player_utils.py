@@ -114,7 +114,7 @@ def play_match(playerA: str, playerB: str, rounds: int=1) -> list[int]:
 
 
 
-def play_tournament(strategies: list[str], rounds: int=1) -> list[int]:
+def play_tournament(strategies: list[str], rounds: int=100) -> list[int]:
     """Plays a tournament where all players play against
     one another with a provided number of rounds. The strategy score
     is the score with the coinciding index within the returning list."""

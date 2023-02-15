@@ -2,6 +2,7 @@ import random
 import time
 from player_utils import *
 import multiprocessing
+import concurrent.futures
 
 MEMORY_DEPTH = 3
 GENERATIONS = 1000
@@ -84,10 +85,10 @@ def run_generation(strategy: str) -> list:
             
     return [allStrats, stratScores[-1], highestScores]
 
-def run_tournament_process(randomStrats, rounds, stratScores, stratNum):
-    tournamentScores = play_tournament(randomStrats, rounds)
+# def run_tournament_process(randomStrats, rounds, stratScores, stratNum):
+#     tournamentScores = play_tournament(randomStrats, rounds)
 
-    stratScores[stratNum] = tournamentScores[-1]
+#     stratScores[stratNum] = tournamentScores[-1]
 
 
 def run_generation_multiprocess(strategy: str) -> list:
@@ -101,8 +102,10 @@ def run_generation_multiprocess(strategy: str) -> list:
     # Compiles all strategies into one list
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
-    stratScores = multiprocessing.Array('i', STRAT_LENGTH + 1)
+    # stratScores = multiprocessing.Array('i', STRAT_LENGTH + 1)
+    stratScores = []
     randomStrats = []
+    allSetsOfStrats = []
     processes = []
 
 
@@ -125,17 +128,23 @@ def run_generation_multiprocess(strategy: str) -> list:
 
             randomStrats.append(strat)
             
-            proc = multiprocessing.Process(
-                target=run_tournament_process, 
-                args=(randomStrats, ROUNDS, stratScores, allStrats.index(strat))
-            )
-            processes.append(proc)
-        
-        for process in processes:
-            process.start()
+            allSetsOfStrats.append(randomStrats)
+            
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = executor.map(play_tournament, allSetsOfStrats)
+    
+            for scores in results:
+                stratScores.append(scores[-1])
+            
+        #     proc = multiprocessing.Process(
+        #         target=run_tournament_process, 
+        #         args=(randomStrats, ROUNDS, stratScores, allStrats.index(strat))
+        #     )
+        #     proc.start()
+        #     processes.append(proc)
 
-        for process in processes:
-            process.join()
+        # for process in processes:
+        #     process.join()
 
             
     # Stores highest scores by fitness score, then index
