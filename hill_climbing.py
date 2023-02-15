@@ -85,10 +85,6 @@ def run_generation(strategy: str) -> list:
             
     return [allStrats, stratScores[-1], highestScores]
 
-# def run_tournament_process(randomStrats, rounds, stratScores, stratNum):
-#     tournamentScores = play_tournament(randomStrats, rounds)
-
-#     stratScores[stratNum] = tournamentScores[-1]
 
 
 def run_generation_multiprocess(strategy: str) -> list:
@@ -102,11 +98,9 @@ def run_generation_multiprocess(strategy: str) -> list:
     # Compiles all strategies into one list
     allStrats = generate_neighbours(strategy)
     allStrats.append(strategy)
-    # stratScores = multiprocessing.Array('i', STRAT_LENGTH + 1)
     stratScores = []
     randomStrats = []
     allSetsOfStrats = []
-    processes = []
 
 
     if SAME_STRANGERS and PLAY_NEIGHBOURS:
@@ -136,17 +130,6 @@ def run_generation_multiprocess(strategy: str) -> list:
             for scores in results:
                 stratScores.append(scores[-1])
             
-        #     proc = multiprocessing.Process(
-        #         target=run_tournament_process, 
-        #         args=(randomStrats, ROUNDS, stratScores, allStrats.index(strat))
-        #     )
-        #     proc.start()
-        #     processes.append(proc)
-
-        # for process in processes:
-        #     process.join()
-
-            
     # Stores highest scores by fitness score, then index
     highestScores = [[-1, -1]]
     
@@ -162,78 +145,6 @@ def run_generation_multiprocess(strategy: str) -> list:
             highestScores.append([score, index])
             
     return [allStrats, stratScores[-1], highestScores]
-
-# multithreadScores = []
-
-# def tournament_thread(strats, rounds):
-#     global multithreadScores
-#     randomTournamentScores = play_tournament(strats, rounds)
-#     multithreadScores.append(randomTournamentScores)
-
-# def run_generation_multithread(strategy: str) -> list:
-#     """Runs a single generation with threading.
-    
-#     \nThe return values are as follows by index:
-#     \n0 - All of the strategy strings
-#     \n1 - The score of the current strategy being used
-#     \n2 - The highest scores from this generation"""
-    
-#     # Compiles all strategies into one list
-#     allStrats = generate_neighbours(strategy)
-#     allStrats.append(strategy)
-#     stratScores = []
-#     randomStrats = []
-#     jobs = []
-#     global multithreadScores
-
-#     if SAME_STRANGERS and PLAY_NEIGHBOURS:
-#         raise Exception("Cannot play same strangers and also play neighbours")
-#     else:
-#         randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
-#         randomStrats.append(strategy)
-    
-#     if PLAY_NEIGHBOURS:
-#         # Grabs the strategy scores from the tournament played between neighbours
-#         stratScores = play_tournament(allStrats, ROUNDS)
-#     else:
-#         # Throws all neighbours and current strategy into randomized tournaments
-#         for strat in allStrats:
-#             if not SAME_STRANGERS:
-#                 randomStrats = generate_strategies(OPPONENT_SIZE, MEMORY_DEPTH)
-#             else:
-#                 randomStrats.pop()
-
-#             randomStrats.append(strat)
-            
-#             thread = threading.Thread(target=tournament_thread, args=(randomStrats, ROUNDS,))
-#             jobs.append(thread)
-            
-#         for j in jobs:
-#             j.start()
-
-#         for j in jobs:
-#             j.join()
-
-#         for scores in multithreadScores:
-#             stratScores.append(scores[-1])
-
-#         multithreadScores = []  
-            
-#     # Stores highest scores by fitness score, then index
-#     highestScores = [[-1, -1]]
-    
-#     # Checks to see if a new local best strategy was discovered
-#     for index in range(len(stratScores)-1):
-#         score = stratScores[index]
-        
-#         if score < highestScores[0][0]:
-#             continue
-#         elif score > highestScores[0][0]:
-#             highestScores = [[score, index]]
-#         elif score == highestScores[0][0]:
-#             highestScores.append([score, index])
-            
-#     return [allStrats, stratScores[-1], highestScores]
 
 
 
