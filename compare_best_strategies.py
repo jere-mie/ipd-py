@@ -27,7 +27,7 @@ TIE = 2
 
 stratstrs = list(strategies.keys())
 
-print("MATCHES")
+print("Player A,Player B,Player A Score,Player B Score")
 
 for a in range(len(stratstrs)):
     for b in range(a+1, len(stratstrs)):
@@ -43,14 +43,14 @@ for a in range(len(stratstrs)):
         else:
             strategies[stratstrs[a]][WINSLOSSESTIES][TIE]+=1
             strategies[stratstrs[b]][WINSLOSSESTIES][TIE]+=1
-        print(f'{strategies[stratstrs[a]][NAME]} vs {strategies[stratstrs[b]][NAME]} : {a_score}/{b_score}')
+        print(f'{strategies[stratstrs[a]][NAME]},{strategies[stratstrs[b]][NAME]},{a_score},{b_score}')
 
-print("\nTOTAL SCORES")
-
-for strat in stratstrs:
-    print(f'{strategies[strat][NAME]}: {strategies[strat][TOTALSCORES]}')
-
-print("\nWINS/LOSSES/TIES")
+print("\nStrategy,Total Score")
 
 for strat in stratstrs:
-    print(f'{strategies[strat][NAME]}\t\tw:{strategies[strat][WINSLOSSESTIES][WIN]}\tl:{strategies[strat][WINSLOSSESTIES][LOSS]}\tt:{strategies[strat][WINSLOSSESTIES][TIE]}')
+    print(f'{strategies[strat][NAME]},{strategies[strat][TOTALSCORES]}')
+
+print("\nStrategy,Wins,Losses,Ties")
+
+for strat in stratstrs:
+    print(f'{strategies[strat][NAME]},{strategies[strat][WINSLOSSESTIES][WIN]},{strategies[strat][WINSLOSSESTIES][LOSS]},{strategies[strat][WINSLOSSESTIES][TIE]}')
