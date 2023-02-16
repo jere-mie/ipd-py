@@ -4,6 +4,10 @@ A set of scripts useful for studying the Iterated Prisoner's Dilemma.
 
 *This code has been developed for Assignment 1 of COMP-3710 (Artificial Intelligence) at the University of Windsor, Winter 2023*
 
+## Requirements
+
+All scripts require Python version 3.6 or newer. No external libraries are required for this codebase.
+
 ## Optimization Strategies Used
 
 3 different optimization strategies have been implemented for trying to find the best deterministic strategy of the Iterated Prisoner's Dilemma:
