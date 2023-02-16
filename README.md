@@ -24,7 +24,7 @@ The following people helped make this project possible:
 - Zach Hutz
 - Caden Quiring
 
-## [LICENSE](LICENSE)
+## License
 
 View the license for this codebase [here](LICENSE).
 
